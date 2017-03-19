@@ -63,7 +63,7 @@ class Cr {
 }
 module.exports = Cr;
 //var cr = new Cr();
-//cr.login("testapi", "blackmiaoolblackmiaool").then(function () {
+//cr.login("name", "password").then(function () {
 //    console.log("success");
 //    cr.join("fiora");
 //    cr.send("text", "api test");
