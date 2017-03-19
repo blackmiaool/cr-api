@@ -2,12 +2,35 @@ class Cr {
     constructor() {
         const socket = require('socket.io-client')('http://mdzzapp.com:3000/');
         this.socket = socket;
-        socket.on('connect', function () {
+
+        socket.on('connect', function (socket) {
             console.log("on connect");
         });
-        socket.on('event', function (data) {});
+        socket.on('event', function (data) {
+            console.log('event', data);
+        });
         socket.on('disconnect', function () {
             console.log("disconnect");
+        });
+        socket.on('newMessage', ({
+            room,
+            type,
+            content
+        }) => {
+            if (!this.listeners[room]) {
+                return;
+            }
+            const message = {
+                type: type.match(/^(\w+)Message/)[1],
+                content,
+            }
+            this.listeners[room].forEach(function (cb) {
+                cb(message);
+            });
+
+        });
+        Object.assign(this, {
+            listeners: {}
         });
     }
     login(nickname, password) {
@@ -26,15 +49,21 @@ class Cr {
                 }
                 this.nickname = nickname;
                 this.token = jwt;
-                resolve();
+                this.socket.emit("getInfo", {
+                    token: jwt,
+                    device: "PC"
+                }, function () {
+                    resolve();
+                });
+
             });
         });
     }
-    send(type, content) {
+    send(room, type, content) {
         this.socket.emit("message", {
             nickname: this.nickname,
             content,
-            room: "fiora",
+            room,
             time: Date.now(),
             type: type + 'Message'
         });
@@ -60,13 +89,26 @@ class Cr {
         });
 
     }
+    listen(room, cb) {
+        if (!this.listeners[room]) {
+            this.listeners[room] = [];
+        }
+        this.listeners[room].push(cb);
+    }
 }
 module.exports = Cr;
 //var cr = new Cr();
 //cr.login("name", "password").then(function () {
 //    console.log("success");
-//    cr.join("fiora");
-//    cr.send("text", "api test");
+//    cr.join("god");
+//    cr.send("god", "text", "api test");
+//    cr.listen("god", function (message) {
+//        console.log("god", message);
+//    });
+//    cr.listen("fiora", function (message) {
+//        console.log("fiora", message);
+//    });
+//
 //}).catch(function (e) {
 //    console.log(e);
 //});
