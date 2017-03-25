@@ -1,16 +1,23 @@
 class Cr {
-    constructor() {
+    constructor({
+        log = false
+    }) {
         const socket = require('socket.io-client')('http://mdzzapp.com:3000/');
         this.socket = socket;
 
-        socket.on('connect', function (socket) {
-            console.log("on connect");
+        this.log = (msg) => {
+            if (log) {
+                console.log(this.name + " " + msg);
+            }
+
+        }
+
+        socket.on('connect', (socket) => {
+            this.log("connect");
         });
-        socket.on('event', function (data) {
-            console.log('event', data);
-        });
-        socket.on('disconnect', function () {
-            console.log("disconnect");
+
+        socket.on('disconnect', () => {
+            this.log("disconnect");
         });
         socket.on('newMessage', (result) => {
             const {
@@ -19,7 +26,7 @@ class Cr {
                 content,
                 time,
                 avatar,
-                nickname:name,
+                nickname: name,
             } = result;
             if (!this.listeners[room]) {
                 return;
