@@ -12,17 +12,24 @@ class Cr {
         socket.on('disconnect', function () {
             console.log("disconnect");
         });
-        socket.on('newMessage', ({
-            room,
-            type,
-            content
-        }) => {
+        socket.on('newMessage', (result) => {
+            const {
+                room,
+                type,
+                content,
+                time,
+                avatar,
+                nickname:name,
+            } = result;
             if (!this.listeners[room]) {
                 return;
             }
             const message = {
                 type: type.match(/^(\w+)Message/)[1],
                 content,
+                room,
+                name,
+                avatar
             }
             this.listeners[room].forEach(function (cb) {
                 cb(message);
@@ -98,10 +105,13 @@ class Cr {
 }
 module.exports = Cr;
 //var cr = new Cr();
-//cr.login("name", "password").then(function () {
+//cr.login("name", "pwd").then(function () {
 //    console.log("success");
 //    cr.join("god");
 //    cr.send("god", "text", "api test");
+//    cr.listen("MDZZ", function (message) {
+//        console.log("MDZZ", message);
+//    });
 //    cr.listen("god", function (message) {
 //        console.log("god", message);
 //    });
