@@ -1,6 +1,6 @@
 class Cr {
     constructor({
-        log = false
+        log = true
     }) {
         const socket = require('socket.io-client')('http://mdzzapp.com:3000/');
         this.socket = socket;
