@@ -1,10 +1,11 @@
 class Cr {
     constructor({
         log = true
-    }) {
+    } = {}) {
         const socket = require('socket.io-client')('http://mdzzapp.com:3000/');
         this.socket = socket;
 
+        this.name = "cr";
         this.log = (msg) => {
             if (log) {
                 console.log(this.name + " " + msg);
