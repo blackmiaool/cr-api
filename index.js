@@ -6,6 +6,8 @@ class Cr {
         this.socket = socket;
 
         this.name = "cr";
+        this.main = "MDZZ";
+        this.context = {};
         this.log = (msg) => {
             if (log) {
                 console.log(this.name + " " + msg);
