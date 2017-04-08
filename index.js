@@ -65,7 +65,7 @@ class Cr {
     }
     login(nickname, password) {
         this.loginInfo = {
-            username,
+            username:nickname,
             password
         };
         return new Promise((resolve, reject) => {
