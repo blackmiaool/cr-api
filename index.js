@@ -21,6 +21,13 @@ class Cr {
 
         socket.on('disconnect', () => {
             this.log("disconnect");
+            this.clearReconnect();
+            if (this.loginInfo && this.loginInfo.username) {
+                this.reconnectInterval = setInterval(() => {
+                    this.log("reconnect");
+                    this.login(this.loginInfo.username, this.loginInfo.password);
+                }, 5000);
+            }
         });
         socket.on('newMessage', (result) => {
             const {
@@ -50,7 +57,17 @@ class Cr {
             listeners: {}
         });
     }
+    clearReconnect() {
+        if (this.reconnectInterval) {
+            clearInterval(this.reconnectInterval);
+            this.reconnectInterval = 0;
+        }
+    }
     login(nickname, password) {
+        this.loginInfo = {
+            username,
+            password
+        };
         return new Promise((resolve, reject) => {
             this.socket.emit("login", {
                 nickname,
