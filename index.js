@@ -17,6 +17,7 @@ class Cr {
 
         socket.on('connect', (socket) => {
             this.log("connect");
+            this.clearReconnect();
         });
 
         socket.on('disconnect', () => {
